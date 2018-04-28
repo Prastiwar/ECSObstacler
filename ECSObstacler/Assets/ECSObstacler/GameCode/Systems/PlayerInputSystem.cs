@@ -3,11 +3,6 @@ using Unity.Entities;
 
 public class PlayerInputSystem : ComponentSystem
 {
-    struct PlayerInputData
-    {
-        public int Length;
-        public ComponentDataArray<PlayerInput> input;
-    }
     [Inject] PlayerInputData inputData;
 
     protected override void OnUpdate()
