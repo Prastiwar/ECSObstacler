@@ -4,7 +4,7 @@ using Unity.Entities;
 
 public class UISystem : ComponentSystem
 {
-    [Inject] private PlayerData data;
+    [Inject] private PlayerUIData data;
 
     private TextMeshProUGUI healthText;
     private TextMeshProUGUI scoreText;
@@ -24,6 +24,7 @@ public class UISystem : ComponentSystem
         for (int i = 0; i < data.Length; i++)
         {
             UpdateHealthText((int)data.health[i].Value);
+            UpdateScoreText(data.scoreHolder[i].Value);
         }
     }
 
@@ -32,6 +33,7 @@ public class UISystem : ComponentSystem
         if (newValue != cachedHealthValue)
         {
             healthText.text = newValue.ToString();
+            cachedHealthValue = newValue;
         }
     }
 
@@ -40,6 +42,7 @@ public class UISystem : ComponentSystem
         if (newValue != cachedScoreValue)
         {
             scoreText.text = newValue.ToString();
+            cachedScoreValue = newValue;
         }
     }
 }

@@ -7,6 +7,8 @@ using UnityEngine;
 
 public struct Health : IComponentData { public float Value; }
 public struct MoveSpeed : IComponentData { public float Value; }
+public struct ScoreGiver : IComponentData { public int Value; }
+public struct ScoreHolder : IComponentData { public int Value; }
 public struct ObstacleMarker : IComponentData { public bool1 MarkDead; }
 public struct PlayerMarker : IComponentData { }
 public struct PlayerInput : IComponentData

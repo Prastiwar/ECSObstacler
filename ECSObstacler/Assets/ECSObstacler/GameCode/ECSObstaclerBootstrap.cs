@@ -11,6 +11,7 @@ using UnityEngine;
 
 public class ECSObstaclerBootstrap : MonoBehaviour
 {
+    public static int Score { get; set; }
     public static float4 ScreenBorder { get; private set; }
 
     public static GameSettings GameSettings { get; private set; }
@@ -39,6 +40,7 @@ public class ECSObstaclerBootstrap : MonoBehaviour
         entityManager.SetComponentData(obstacle, new Heading2D { Value = Utils.GetRandomHeading(randPos) });
         entityManager.SetComponentData(obstacle, new MoveSpeed { Value = GameSettings.ObstacleSpeed });
         entityManager.SetComponentData(obstacle, default(ObstacleMarker));
+        entityManager.SetComponentData(obstacle, new ScoreGiver { Value = UnityEngine.Random.Range(1, 3) });
         entityManager.AddSharedComponentData(obstacle, ObstacleRenderer);
     }
 
@@ -64,6 +66,7 @@ public class ECSObstaclerBootstrap : MonoBehaviour
         entityManager.SetComponentData(player, new Health { Value = GameSettings.StartHealth });
         entityManager.SetComponentData(player, new MoveSpeed { Value = GameSettings.PlayerSpeed });
         entityManager.SetComponentData(player, new PlayerInput() { Gravity = 5 });
+        entityManager.SetComponentData(player, new ScoreHolder() { Value = 0 });
         entityManager.AddSharedComponentData(player, PlayerRenderer);
     }
 
@@ -87,7 +90,7 @@ public class ECSObstaclerBootstrap : MonoBehaviour
         FloorRenderer = Utils.GetLookFromPrototype("FloorPrototype");
 
         World.Active.GetOrCreateManager<UISystem>().InitializeUI(GameSettings.HealthText, GameSettings.ScoreText);
-        NewGame();
+        NewGame(); // TODO: newGame from button
     }
 
     private static void SetArchetypes(EntityManager entityManager)
@@ -100,13 +103,15 @@ public class ECSObstaclerBootstrap : MonoBehaviour
         var moveSpeed = ComponentType.Create<MoveSpeed>();
         var position2D = ComponentType.Create<Position2D>();
         var transformMatrix = ComponentType.Create<TransformMatrix>();
+        var scoreHolder = ComponentType.Create<ScoreHolder>();
+        var scoreGiver = ComponentType.Create<ScoreGiver>();
 
         PlayerArchetype = entityManager.CreateArchetype(
-            position2D, transformMatrix, heading2D, moveSpeed, playerTag, health, playerInput
+            position2D, transformMatrix, heading2D, moveSpeed, playerTag, scoreHolder, health, playerInput
             );
 
         ObstacleArchetype = entityManager.CreateArchetype(
-            position2D, transformMatrix, heading2D, moveSpeed, obstacleTag
+            position2D, transformMatrix, heading2D, moveSpeed, obstacleTag, scoreGiver
             );
 
         FloorArchetype = entityManager.CreateArchetype(

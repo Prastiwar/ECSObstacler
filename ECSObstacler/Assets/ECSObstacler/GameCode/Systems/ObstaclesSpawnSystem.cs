@@ -32,6 +32,8 @@ public class ObstaclesSpawnSystem : ComponentSystem
         puc.SetComponent(new Heading2D { Value = Utils.HeadToPlayer(playerPosData.position[0].Value, randPos) });
         puc.SetComponent(default(ObstacleMarker));
         puc.SetComponent(new MoveSpeed { Value = ECSObstaclerBootstrap.GameSettings.ObstacleSpeed });
+        puc.SetComponent(new ScoreGiver { Value = UnityEngine.Random.Range(1, 3) });
         puc.AddSharedComponent(ECSObstaclerBootstrap.ObstacleRenderer);
+
     }
 }

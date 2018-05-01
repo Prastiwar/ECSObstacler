@@ -17,22 +17,22 @@ public class CollisionSystem : JobComponentSystem
         [ReadOnly] public ComponentDataArray<Position2D> ObstaclePositions;
         [ReadOnly] public ComponentDataArray<Position2D> PlayerPositions;
 
-        public void Execute(int index)
+        public void Execute(int oIndex)
         {
             int length = PlayerPositions.Length;
-            for (int i = 0; i < length; i++)
+            for (int pIndex = 0; pIndex < length; pIndex++)
             {
-                var distance = math.distance(PlayerPositions[i].Value, ObstaclePositions[index].Value);
+                var distance = math.distance(PlayerPositions[pIndex].Value, ObstaclePositions[oIndex].Value);
                 if (distance <= 1)
                 {
-                    var health = PlayerHealth[i];
-                    var obstacle = Obstacle[i];
+                    var health = PlayerHealth[pIndex];
+                    var obstacle = Obstacle[oIndex];
 
                     health.Value--;
                     obstacle.MarkDead = true;
 
-                    PlayerHealth[i] = health;
-                    Obstacle[i] = obstacle;
+                    PlayerHealth[pIndex] = health;
+                    Obstacle[oIndex] = obstacle;
                 }
             }
         }

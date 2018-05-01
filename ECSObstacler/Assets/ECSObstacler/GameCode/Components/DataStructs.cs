@@ -13,6 +13,21 @@ struct PlayerData
     public ComponentDataArray<Health> health;
 }
 
+struct PlayerUIData
+{
+    public int Length;
+    [ReadOnly] public ComponentDataArray<PlayerMarker> marker;
+    [ReadOnly] public ComponentDataArray<Health> health;
+    [ReadOnly] public ComponentDataArray<ScoreHolder> scoreHolder;
+}
+
+struct PlayerScoreData
+{
+    public int Length;
+    [ReadOnly] public ComponentDataArray<PlayerMarker> marker;
+    public ComponentDataArray<ScoreHolder> scoreHolder;
+}
+
 struct PlayerInputData
 {
     public int Length;
@@ -50,6 +65,7 @@ struct RemoveObstacleData
     [ReadOnly] public EntityArray entity;
     [ReadOnly] public ComponentDataArray<ObstacleMarker> marker;
     [ReadOnly] public ComponentDataArray<Position2D> position;
+    [ReadOnly] public ComponentDataArray<ScoreGiver> scoreGiver;
 }
 
 struct ObstacleMoveData

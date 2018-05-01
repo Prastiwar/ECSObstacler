@@ -518,10 +518,11 @@ MonoBehaviour:
   HealthText: {fileID: 2040442814}
   ScoreText: {fileID: 247459988}
   PauseButton: {fileID: 0}
-  StartHealth: 100
+  PlayButton: {fileID: 0}
+  StartHealth: 10
   PlayerSpeed: 25
   ObstacleSpeed: 10
-  SpawnCooldown: 1
+  SpawnCooldown: 0.8
 --- !u!1 &247459986
 GameObject:
   m_ObjectHideFlags: 0
