@@ -7,9 +7,11 @@ using UnityEngine;
 
 public struct Health : IComponentData { public float Value; }
 public struct MoveSpeed : IComponentData { public float Value; }
-
+public struct ObstacleMarker : IComponentData { public bool1 MarkDead; }
+public struct PlayerMarker : IComponentData { }
 public struct PlayerInput : IComponentData
 {
-    public float2 Move;
+    public float2 Velocity;
     public bool1 IsGrounded;
+    public float2 Gravity;
 }

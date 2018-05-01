@@ -8,35 +8,52 @@ using Unity.Transforms;
 using Unity.Transforms2D;
 using UnityEngine;
 
+public struct JumpComponent : IComponentData { }
+
+[UpdateAfter(typeof(PlayerInputSystem))]
 public class PlayerMoveSystem : ComponentSystem
 {
-    [Inject] MoveData posData;
-    private float2 screenBorder;
-    private bool1 isBorderSet;
+    [Inject] private PlayerMoveData data;
 
     protected override void OnUpdate()
     {
-        if (!isBorderSet)
-        {
-            var planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-            screenBorder = new float2(-planes[0].normal.x * planes[0].distance,
-                                       -planes[1].normal.x * planes[1].distance);
-            isBorderSet = true;
-        }
-
         var dt = Time.deltaTime;
 
-        for (int i = 0; i < posData.Length; i++)
+        for (int i = 0; i < data.Length; i++)
         {
-            var pos = posData.position[i];
-            var scaleX = posData.matrix[i].Value.m0.x;
-            var speedValue = dt * posData.speed[i].Value;
-            var nextPos = pos.Value + (posData.input[i].Move * speedValue);
+            var pos = data.position[i];
+            var input = data.input[i];
+            var scaleX = data.matrix[i].Value.m0.x;
+            var scaleY = data.matrix[i].Value.m1.y;
+            var speedValue = dt * data.speed[i].Value;
+            var gravity = input.Gravity * dt;
 
-            pos.Value = math.lerp(pos.Value, nextPos, speedValue);
-            pos.Value.x = math.clamp(pos.Value.x, (screenBorder.x + scaleX), (screenBorder.y - scaleX));
+            pos.Value = math.lerp(pos.Value, (pos.Value + gravity + input.Velocity), speedValue); // Apply gravity
 
-            posData.position[i] = pos;
+            pos.Value.x = math.clamp(pos.Value.x, (ECSObstaclerBootstrap.ScreenBorder.x + scaleX), (ECSObstaclerBootstrap.ScreenBorder.y - scaleX));
+            pos.Value.y = math.clamp(pos.Value.y, (ECSObstaclerBootstrap.ScreenBorder.z + scaleY), (ECSObstaclerBootstrap.ScreenBorder.w - scaleY));
+
+            if (Utils.IsOnBorder(ECSObstaclerBootstrap.ScreenBorder, pos.Value, data.matrix[i]))
+            {
+                if (!input.IsGrounded)
+                {
+                    ToggleInput(input, i);
+                }
+            }
+            else
+            {
+                if (input.IsGrounded)
+                {
+                    ToggleInput(input, i);
+                }
+            }
+            data.position[i] = pos;
         }
+    }
+
+    private void ToggleInput(PlayerInput input, int i)
+    {
+        input.IsGrounded = !input.IsGrounded;
+        data.input[i] = input;
     }
 }
