@@ -4,12 +4,17 @@ using UnityEngine.UI;
 
 public class GameSettings : MonoBehaviour
 {
-    [Header("In Game References")]
+    [Header("Hud References")]
     public TextMeshProUGUI HealthText;
     public TextMeshProUGUI ScoreText;
     public Button PauseButton;
-    [Header("In Menu References")]
+    public Button MenuButton;
+    [Header("Canvas References")]
+    public GameObject HUDCanvas;
+    public GameObject PauseCanvas;
+    public GameObject MenuCanvas;
     public Button PlayButton;
+    public Button[] QuitButtons;
     [Header("Settings")]
     public float StartHealth;
     public float PlayerSpeed;

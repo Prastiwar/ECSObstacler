@@ -34,6 +34,5 @@ public class ObstaclesSpawnSystem : ComponentSystem
         puc.SetComponent(new MoveSpeed { Value = ECSObstaclerBootstrap.GameSettings.ObstacleSpeed });
         puc.SetComponent(new ScoreGiver { Value = UnityEngine.Random.Range(1, 3) });
         puc.AddSharedComponent(ECSObstaclerBootstrap.ObstacleRenderer);
-
     }
 }

@@ -8,8 +8,6 @@ using Unity.Transforms;
 using Unity.Transforms2D;
 using UnityEngine;
 
-public struct JumpComponent : IComponentData { }
-
 [UpdateAfter(typeof(PlayerInputSystem))]
 public class PlayerMoveSystem : ComponentSystem
 {

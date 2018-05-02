@@ -8,10 +8,11 @@ using Unity.Rendering;
 using Unity.Transforms;
 using Unity.Transforms2D;
 using UnityEngine;
+using UnityEngine.Experimental.LowLevel;
+using UnityEngine.SceneManagement;
 
 public class ECSObstaclerBootstrap : MonoBehaviour
 {
-    public static int Score { get; set; }
     public static float4 ScreenBorder { get; private set; }
 
     public static GameSettings GameSettings { get; private set; }
@@ -27,9 +28,22 @@ public class ECSObstaclerBootstrap : MonoBehaviour
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         CreatePlayer(entityManager);
-        //CreateFloor(entityManager);
         CreateObstacles(entityManager);
-        // TODO: create scene
+        //CreateFloor(entityManager);
+        World.Active.SetBehavioursActive(true);
+        Time.timeScale = 1;
+    }
+
+    private static void CreatePlayer(EntityManager entityManager)
+    {
+        var player = entityManager.CreateEntity(PlayerArchetype);
+        entityManager.SetComponentData(player, new Position2D { Value = new float2(0.0f, 0.0f) });
+        entityManager.SetComponentData(player, new Heading2D { Value = new float2(0.0f, 1.0f) });
+        entityManager.SetComponentData(player, new Health { Value = GameSettings.StartHealth });
+        entityManager.SetComponentData(player, new MoveSpeed { Value = GameSettings.PlayerSpeed });
+        entityManager.SetComponentData(player, new PlayerInput() { Gravity = 5 });
+        entityManager.SetComponentData(player, new ScoreHolder() { Value = 0 });
+        entityManager.AddSharedComponentData(player, PlayerRenderer);
     }
 
     private static void CreateObstacles(EntityManager entityManager)
@@ -58,21 +72,10 @@ public class ECSObstaclerBootstrap : MonoBehaviour
         entityManager.AddSharedComponentData(floor, FloorRenderer);
     }
 
-    private static void CreatePlayer(EntityManager entityManager)
-    {
-        var player = entityManager.CreateEntity(PlayerArchetype);
-        entityManager.SetComponentData(player, new Position2D { Value = new float2(0.0f, 0.0f) });
-        entityManager.SetComponentData(player, new Heading2D { Value = new float2(0.0f, 1.0f) });
-        entityManager.SetComponentData(player, new Health { Value = GameSettings.StartHealth });
-        entityManager.SetComponentData(player, new MoveSpeed { Value = GameSettings.PlayerSpeed });
-        entityManager.SetComponentData(player, new PlayerInput() { Gravity = 5 });
-        entityManager.SetComponentData(player, new ScoreHolder() { Value = 0 });
-        entityManager.AddSharedComponentData(player, PlayerRenderer);
-    }
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void InitializeBeforeScene()
     {
+        World.Active.SetBehavioursActive(false);
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         SetArchetypes(entityManager);
     }
@@ -89,8 +92,41 @@ public class ECSObstaclerBootstrap : MonoBehaviour
         ObstacleRenderer = Utils.GetLookFromPrototype("ObstaclePrototype");
         FloorRenderer = Utils.GetLookFromPrototype("FloorPrototype");
 
-        World.Active.GetOrCreateManager<UISystem>().InitializeUI(GameSettings.HealthText, GameSettings.ScoreText);
-        NewGame(); // TODO: newGame from button
+        SetupUI();
+    }
+
+    private static void SetupUI()
+    {
+        GameSettings.PauseButton.onClick.AddListener(delegate {
+            Time.timeScale = Time.timeScale < 1 ? 1 : 0;
+            GameSettings.PauseCanvas.SetActive(!GameSettings.PauseCanvas.activeSelf);
+        });
+
+        GameSettings.MenuButton.onClick.AddListener(RestartWorld);
+
+        foreach (var btn in GameSettings.QuitButtons) btn.onClick.AddListener(() => Application.Quit());
+
+        GameSettings.PlayButton.onClick.AddListener(NewGame);
+        GameSettings.PlayButton.onClick.AddListener(delegate {
+            GameSettings.MenuCanvas.gameObject.SetActive(false);
+            GameSettings.HUDCanvas.gameObject.SetActive(true);
+        });
+
+        ActiveMenu();
+    }
+
+    private static void RestartWorld()
+    {
+        World.Active.SetBehavioursActive(false);
+        World.Active.GetExistingManager<EntityManager>().DestroyAllEntities();
+        ActiveMenu();
+    }
+
+    private static void ActiveMenu()
+    {
+        GameSettings.HUDCanvas.SetActive(false);
+        GameSettings.PauseCanvas.SetActive(false);
+        GameSettings.MenuCanvas.SetActive(true);
     }
 
     private static void SetArchetypes(EntityManager entityManager)
