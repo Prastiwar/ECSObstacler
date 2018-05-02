@@ -28,6 +28,14 @@ struct PlayerScoreData
     public ComponentDataArray<ScoreHolder> scoreHolder;
 }
 
+struct PlayerHealthData
+{
+    public int Length;
+    [ReadOnly] public EntityArray entity;
+    [ReadOnly] public ComponentDataArray<PlayerMarker> marker;
+    [ReadOnly] public ComponentDataArray<Health> health;
+}
+
 struct PlayerInputData
 {
     public int Length;

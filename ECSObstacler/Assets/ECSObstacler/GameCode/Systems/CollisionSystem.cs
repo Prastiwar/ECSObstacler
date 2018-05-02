@@ -5,6 +5,8 @@ using Unity.Mathematics;
 using Unity.Transforms2D;
 using UnityEngine;
 
+[UpdateAfter(typeof(ObstaclesMoveSystem))]
+[UpdateAfter(typeof(PlayerMoveSystem))]
 public class CollisionSystem : JobComponentSystem
 {
     [Inject] private PlayerData player;

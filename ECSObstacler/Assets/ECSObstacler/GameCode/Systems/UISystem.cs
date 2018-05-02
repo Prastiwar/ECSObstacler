@@ -1,19 +1,23 @@
-﻿using System;
-using TMPro;
-using Unity.Entities;
+﻿using Unity.Entities;
 
+[AlwaysUpdateSystem]
 public class UISystem : ComponentSystem
 {
     [Inject] private PlayerUIData data;
     private int cachedHealthValue = -1;
     private int cachedScoreValue = -1;
-    
+
     protected override void OnUpdate()
     {
         for (int i = 0; i < data.Length; i++)
         {
             UpdateHealthText((int)data.health[i].Value);
             UpdateScoreText(data.scoreHolder[i].Value);
+        }
+        if (data.Length < 1)
+        {
+            UpdateHealthText(0);
+            ECSObstaclerBootstrap.GameOver();
         }
     }
 

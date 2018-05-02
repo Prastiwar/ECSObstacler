@@ -1,9 +1,4 @@
-﻿using System;
-using Unity.Collections;
-using Unity.Entities;
-using Unity.Jobs;
-using Unity.Mathematics;
-using Unity.Transforms2D;
+﻿using Unity.Entities;
 using UnityEngine;
 
 public class ObstaclesSpawnSystem : ComponentSystem
@@ -18,21 +13,7 @@ public class ObstaclesSpawnSystem : ComponentSystem
         if (timer >= ECSObstaclerBootstrap.GameSettings.SpawnCooldown)
         {
             timer = 0;
-            SpawnObstacle();
+            ECSObstaclerBootstrap.CreateObstacle(EntityManager, playerPosData.position[0].Value);
         }
-    }
-
-    private void SpawnObstacle()
-    {
-        var puc = PostUpdateCommands;
-        var randPos = Utils.GetRandomPosition(ECSObstaclerBootstrap.ScreenBorder);
-
-        puc.CreateEntity(ECSObstaclerBootstrap.ObstacleArchetype);
-        puc.SetComponent(new Position2D { Value = randPos });
-        puc.SetComponent(new Heading2D { Value = Utils.HeadToPlayer(playerPosData.position[0].Value, randPos) });
-        puc.SetComponent(default(ObstacleMarker));
-        puc.SetComponent(new MoveSpeed { Value = ECSObstaclerBootstrap.GameSettings.ObstacleSpeed });
-        puc.SetComponent(new ScoreGiver { Value = UnityEngine.Random.Range(1, 3) });
-        puc.AddSharedComponent(ECSObstaclerBootstrap.ObstacleRenderer);
     }
 }
