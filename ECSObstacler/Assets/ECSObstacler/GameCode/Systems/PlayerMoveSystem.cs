@@ -15,7 +15,7 @@ public class PlayerMoveSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-        var dt = Time.deltaTime;
+        var dt = Time.fixedDeltaTime;
 
         for (int i = 0; i < data.Length; i++)
         {

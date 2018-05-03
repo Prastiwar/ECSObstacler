@@ -5,6 +5,7 @@ using Unity.Transforms2D;
 
 public class ObstacleRemoveBarrier : BarrierSystem { }
 
+[UpdateAfter(typeof(CollisionSystem))]
 public class ObstaclesRemovalSystem : JobComponentSystem
 {
     [Inject] private ObstacleRemoveBarrier barrier;

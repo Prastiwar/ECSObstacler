@@ -6,6 +6,7 @@ using Unity.Transforms2D;
 public class RemovePlayerBarrier : BarrierSystem { }
 
 [UpdateAfter(typeof(UISystem))]
+[UpdateAfter(typeof(CollisionSystem))]
 public class PlayerRemovalSystem : JobComponentSystem
 {
     [Inject] private RemovePlayerBarrier barrier;

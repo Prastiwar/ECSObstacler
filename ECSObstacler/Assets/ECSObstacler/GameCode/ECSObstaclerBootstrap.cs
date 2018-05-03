@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Entities;
+﻿using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using Unity.Transforms2D;
 using UnityEngine;
-using System.Linq;
-using UnityEngine.Experimental.LowLevel;
-using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 
 public class ECSObstaclerBootstrap : MonoBehaviour
